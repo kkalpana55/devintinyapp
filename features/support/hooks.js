@@ -47,6 +47,11 @@ Before({ tags: "@ui" }, async function () {
   browser = browser || (await chromium.launch());
   this.context = await browser.newContext();
   this.page = await this.context.newPage();
+  this.consoleErrors = [];
+  this.requests = [];
+  this.page.on("console", (msg) => msg.type() === "error" && this.consoleErrors.push(msg.text()));
+  this.page.on("pageerror", (err) => this.consoleErrors.push(err.message));
+  this.page.on("request", (req) => this.requests.push(req.url()));
 });
 
 After({ tags: "@ui" }, async function ({ result }) {

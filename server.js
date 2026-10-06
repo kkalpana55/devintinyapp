@@ -7,7 +7,14 @@ const page = fs.readFileSync(
 );
 
 const server = http.createServer((req, res) => {
-  const { pathname } = new URL(req.url, "http://localhost");
+  let pathname;
+  try {
+    ({ pathname } = new URL(req.url, "http://localhost"));
+  } catch {
+    res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Bad request");
+    return;
+  }
   const knownRoute = pathname === "/api/message" || pathname === "/" || pathname === "/index.html";
 
   if (knownRoute && req.method !== "GET" && req.method !== "HEAD") {
