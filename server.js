@@ -8,6 +8,13 @@ const page = fs.readFileSync(
 
 const server = http.createServer((req, res) => {
   const { pathname } = new URL(req.url, "http://localhost");
+  const knownRoute = pathname === "/api/message" || pathname === "/" || pathname === "/index.html";
+
+  if (knownRoute && req.method !== "GET" && req.method !== "HEAD") {
+    res.writeHead(405, { "Content-Type": "text/plain; charset=utf-8", Allow: "GET, HEAD" });
+    res.end("Method not allowed");
+    return;
+  }
 
   if (pathname === "/api/message") {
     res.writeHead(200, { "Content-Type": "application/json" });
@@ -21,7 +28,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  res.writeHead(404);
+  res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
   res.end("Not found");
 });
 
