@@ -7,13 +7,15 @@ const page = fs.readFileSync(
 );
 
 const server = http.createServer((req, res) => {
-  if (req.url === "/api/message") {
+  const { pathname } = new URL(req.url, "http://localhost");
+
+  if (pathname === "/api/message") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Hello from the backend!" }));
     return;
   }
 
-  if (req.url === "/" || req.url === "/index.html") {
+  if (pathname === "/" || pathname === "/index.html") {
     res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
     res.end(page);
     return;
@@ -23,7 +25,7 @@ const server = http.createServer((req, res) => {
   res.end("Not found");
 });
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`App running at http://localhost:${port}`);
 });

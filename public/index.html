@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>tiny-app</title>
+</head>
+<body>
+  <h1>tiny-app</h1>
+  <p id="message">Loading...</p>
+  <script>
+    fetch("/api/message")
+      .then((res) => res.json())
+      .then((data) => {
+        document.getElementById("message").textContent = data.message;
+      })
+      .catch(() => {
+        document.getElementById("message").textContent = "Could not reach the backend.";
+      });
+  </script>
+</body>
+</html>
